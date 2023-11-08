@@ -7,14 +7,22 @@ package com.mycompany.g1_introprogramacion;
 /**
  *
  * @author Grupo1
- */
-public class Main {
+  public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-    }
-    
-}
+        System.out.println("Ingrese la cantidad del producto:");
+        int cantidad = scanner.nextInt();
+
+        double precioUnitario = 10.0; // Precio unitario del producto
+        double iva = 0.19; // Valor del IVA
+        double descuento = 0.1; // Valor del descuento
+
+        double precioTotalSinIva = cantidad * precioUnitario;
+        double precioTotalConIva = precioTotalSinIva * (1 + iva);
+        double precioFinalConDescuento = precioTotalConIva * (1 - descuento);
+
+        System.out.println("El precio total sin IVA es: " + precioTotalSinIva);
+        System.out.println("El precio total con IVA es: " + precioTotalConIva);
+        System.out.println("El precio final con descuento es: " + precioFinalConDescuento);
+
+        scanner.close();
