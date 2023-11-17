@@ -1,0 +1,64 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Producto {
+    String nombre;
+    int cantidad;
+
+    public Producto(String nombre, int cantidad) {
+        this.nombre = nombre;
+        this.cantidad = cantidad;
+    }
+}
+
+public class GestionInventario {
+
+    public static void main(String[] args) {
+        // Crear una lista de productos
+        ArrayList<Producto> inventario = new ArrayList<>();
+
+        // Agregar algunos productos de ejemplo
+        inventario.add(new Producto("Producto1", 10));
+        inventario.add(new Producto("Producto2", 5));
+        inventario.add(new Producto("Producto3", 8));
+
+        // Mostrar el inventario actual
+        System.out.println("Inventario actual:");
+        mostrarInventario(inventario);
+
+        // Solicitar al usuario que elija un producto para retirar
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingrese el nombre del producto que desea retirar: ");
+        String productoRetirar = scanner.nextLine();
+
+        // Buscar el producto en el inventario
+        Producto productoSeleccionado = null;
+        for (Producto producto : inventario) {
+            if (producto.nombre.equalsIgnoreCase(productoRetirar)) {
+                productoSeleccionado = producto;
+                break;
+            }
+        }
+
+        // Realizar el retiro si el producto se encuentra
+        if (productoSeleccionado != null) {
+            inventario.remove(productoSeleccionado);
+            System.out.println("Producto retirado con éxito.");
+        } else {
+            System.out.println("Producto no encontrado en el inventario.");
+        }
+
+        // Mostrar el inventario actualizado
+        System.out.println("Inventario actualizado:");
+        mostrarInventario(inventario);
+
+        scanner.close();
+    }
+
+    // Método para mostrar el inventario
+    private static void mostrarInventario(ArrayList<Producto> inventario) {
+        for (Producto producto : inventario) {
+            System.out.println(producto.nombre + ": " + producto.cantidad + " unidades");
+        }
+    }
+}
