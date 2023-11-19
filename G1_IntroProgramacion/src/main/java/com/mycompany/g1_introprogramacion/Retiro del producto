@@ -1,5 +1,5 @@
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 class Producto {
     String nombre;
@@ -23,13 +23,10 @@ public class GestionInventario {
         inventario.add(new Producto("Producto3", 8));
 
         // Mostrar el inventario actual
-        System.out.println("Inventario actual:");
         mostrarInventario(inventario);
 
         // Solicitar al usuario que elija un producto para retirar
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Ingrese el nombre del producto que desea retirar: ");
-        String productoRetirar = scanner.nextLine();
+        String productoRetirar = JOptionPane.showInputDialog("Ingrese el nombre del producto que desea retirar:");
 
         // Buscar el producto en el inventario
         Producto productoSeleccionado = null;
@@ -43,22 +40,21 @@ public class GestionInventario {
         // Realizar el retiro si el producto se encuentra
         if (productoSeleccionado != null) {
             inventario.remove(productoSeleccionado);
-            System.out.println("Producto retirado con éxito.");
+            JOptionPane.showMessageDialog(null, "Producto retirado con éxito.");
         } else {
-            System.out.println("Producto no encontrado en el inventario.");
+            JOptionPane.showMessageDialog(null, "Producto no encontrado en el inventario.");
         }
 
         // Mostrar el inventario actualizado
-        System.out.println("Inventario actualizado:");
         mostrarInventario(inventario);
-
-        scanner.close();
     }
 
     // Método para mostrar el inventario
     private static void mostrarInventario(ArrayList<Producto> inventario) {
+        StringBuilder mensaje = new StringBuilder("Inventario actual:\n");
         for (Producto producto : inventario) {
-            System.out.println(producto.nombre + ": " + producto.cantidad + " unidades");
+            mensaje.append(producto.nombre).append(": ").append(producto.cantidad).append(" unidades\n");
         }
+        JOptionPane.showMessageDialog(null, mensaje.toString());
     }
 }
