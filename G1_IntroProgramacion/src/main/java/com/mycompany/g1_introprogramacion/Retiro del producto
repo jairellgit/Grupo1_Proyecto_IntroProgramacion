@@ -1,60 +1,97 @@
-import javax.swing.JOptionPane;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Scanner;
 
-class Producto {
-    String nombre;
-    int cantidad;
+public class GestionProductos {
 
-    public Producto(String nombre, int cantidad) {
-        this.nombre = nombre;
-        this.cantidad = cantidad;
-    }
-}
-
-public class GestionInventario {
+    private static List<List<String>> productos = new ArrayList<>();
 
     public static void main(String[] args) {
-        // Crear una lista de productos
-        ArrayList<Producto> inventario = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
 
-        // Agregar algunos productos de ejemplo
-        inventario.add(new Producto("Producto1", 10));
-        inventario.add(new Producto("Producto2", 5));
-        inventario.add(new Producto("Producto3", 8));
+        while (true) {
+            System.out.println("1. Agregar Producto");
+            System.out.println("2. Retirar Producto");
+            System.out.println("3. Mostrar Productos");
+            System.out.println("4. Salir");
+            System.out.print("Ingrese su opción: ");
 
-        // Mostrar el inventario actual
-        mostrarInventario(inventario);
+            int opcion = scanner.nextInt();
+            scanner.nextLine();  // Limpiar el buffer
 
-        // Solicitar al usuario que elija un producto para retirar
-        String productoRetirar = JOptionPane.showInputDialog("Ingrese el nombre del producto que desea retirar:");
+            switch (opcion) {
+                case 1:
+                    agregarProducto();
+                    break;
+                case 2:
+                    retirarProducto();
+                    break;
+                case 3:
+                    mostrarProductos();
+                    break;
+                case 4:
+                    System.out.println("Saliendo del programa. ¡Hasta luego!");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Opción no válida. Inténtelo de nuevo.");
+            }
+        }
+    }
 
-        // Buscar el producto en el inventario
-        Producto productoSeleccionado = null;
-        for (Producto producto : inventario) {
-            if (producto.nombre.equalsIgnoreCase(productoRetirar)) {
-                productoSeleccionado = producto;
+    private static void agregarProducto() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Ingrese el ID del producto: ");
+        String id = scanner.nextLine();
+
+        System.out.print("Ingrese el nombre del producto: ");
+        String nombre = scanner.nextLine();
+
+        System.out.print("Ingrese la categoría del producto: ");
+        String categoria = scanner.nextLine();
+
+        List<String> nuevoProducto = new ArrayList<>();
+        nuevoProducto.add(id);
+        nuevoProducto.add(nombre);
+        nuevoProducto.add(categoria);
+
+        productos.add(nuevoProducto);
+
+        System.out.println("Producto agregado correctamente.");
+    }
+
+    private static void retirarProducto() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Ingrese el ID del producto que desea retirar: ");
+        String idRetirar = scanner.nextLine();
+
+        Iterator<List<String>> iterator = productos.iterator();
+        boolean encontrado = false;
+
+        while (iterator.hasNext()) {
+            List<String> productoActual = iterator.next();
+            if (productoActual.get(0).equals(idRetirar)) {
+                iterator.remove();
+                encontrado = true;
                 break;
             }
         }
 
-        // Realizar el retiro si el producto se encuentra
-        if (productoSeleccionado != null) {
-            inventario.remove(productoSeleccionado);
-            JOptionPane.showMessageDialog(null, "Producto retirado con éxito.");
+        if (encontrado) {
+            System.out.println("Producto retirado correctamente.");
         } else {
-            JOptionPane.showMessageDialog(null, "Producto no encontrado en el inventario.");
+            System.out.println("No se encontró un producto con ese ID.");
         }
-
-        // Mostrar el inventario actualizado
-        mostrarInventario(inventario);
     }
 
-    // Método para mostrar el inventario
-    private static void mostrarInventario(ArrayList<Producto> inventario) {
-        StringBuilder mensaje = new StringBuilder("Inventario actual:\n");
-        for (Producto producto : inventario) {
-            mensaje.append(producto.nombre).append(": ").append(producto.cantidad).append(" unidades\n");
+    private static void mostrarProductos() {
+        System.out.println("Lista de Productos:");
+
+        for (List<String> producto : productos) {
+            System.out.println("ID: " + producto.get(0) + ", Nombre: " + producto.get(1) + ", Categoría: " + producto.get(2));
         }
-        JOptionPane.showMessageDialog(null, mensaje.toString());
     }
 }
