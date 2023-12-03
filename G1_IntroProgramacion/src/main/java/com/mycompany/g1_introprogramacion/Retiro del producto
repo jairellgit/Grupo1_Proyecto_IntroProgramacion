@@ -1,97 +1,108 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
+import javax.swing.JOptionPane;
 
-public class GestionProductos {
+public class Registro {
+    // Listas para almacenar productos
+    private static List<Integer> id = new ArrayList<>();
+    private static List<String> productos = new ArrayList<>();
+    private static List<String> categorias = new ArrayList<>();
+    private static List<Double> precios = new ArrayList<>();
+    private static List<Integer> existencias = new ArrayList<>();
+    private static List<Date> fechasCaducidad = new ArrayList<>();
 
-    private static List<List<String>> productos = new ArrayList<>();
+    private static int contadorProductos = 1;
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+    // Constructor
+    public Registro() {
+    }
 
-        while (true) {
-            System.out.println("1. Agregar Producto");
-            System.out.println("2. Retirar Producto");
-            System.out.println("3. Mostrar Productos");
-            System.out.println("4. Salir");
-            System.out.print("Ingrese su opción: ");
+    // Getters y Setters
+    public List<String> getProductos() {
+        return productos;
+    }
 
-            int opcion = scanner.nextInt();
-            scanner.nextLine();  // Limpiar el buffer
+    public int getContadorProductos() {
+        return contadorProductos;
+    }
 
-            switch (opcion) {
-                case 1:
-                    agregarProducto();
-                    break;
-                case 2:
-                    retirarProducto();
-                    break;
-                case 3:
-                    mostrarProductos();
-                    break;
-                case 4:
-                    System.out.println("Saliendo del programa. ¡Hasta luego!");
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("Opción no válida. Inténtelo de nuevo.");
+    private List<String> getCategorias() {
+        return List.of("Frescos", "Granos", "Carnicería", "Abarrotes", "Cereales", "Limpieza", "Lácteos", "Panadería", "Hogar", "Congelados");
+    }
+
+    // Métodos
+    public int registrarProducto() {
+        try {
+            if (contadorProductos > 100) {
+                JOptionPane.showMessageDialog(null, "Se ha alcanzado el límite de productos.");
+                return 0;
             }
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+            String nombre = JOptionPane.showInputDialog("Nombre del producto:");
+            String categoria = (String) JOptionPane.showInputDialog(null, "Categoría del producto:", "Seleccionar Categoría", JOptionPane.PLAIN_MESSAGE, null, getCategorias().toArray(), getCategorias().get(0));
+            double precio = Double.parseDouble(JOptionPane.showInputDialog("Precio del producto:"));
+            int existencia = Integer.parseInt(JOptionPane.showInputDialog("Existencias disponibles:"));
+            String fechaCaducidadStr = JOptionPane.showInputDialog("Fecha de caducidad (DD/MM/YYYY):");
+            Date fechaCaducidad = formatter.parse(fechaCaducidadStr);
+
+            id.add(contadorProductos);
+            productos.add(nombre);
+            categorias.add(categoria);
+            precios.add(precio);
+            existencias.add(existencia);
+            fechasCaducidad.add(fechaCaducidad);
+
+            contadorProductos++;
+            return contadorProductos - 1;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Los valores ingresados no son válidos, inténtelo nuevamente.");
+            return 0;
         }
     }
 
-    private static void agregarProducto() {
-        Scanner scanner = new Scanner(System.in);
+    public void retirarProducto() {
+        try {
+            int idRetirar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto que desea retirar:"));
 
-        System.out.print("Ingrese el ID del producto: ");
-        String id = scanner.nextLine();
+            Iterator<Integer> idIterator = id.iterator();
+            Iterator<String> productoIterator = productos.iterator();
+            Iterator<String> categoriaIterator = categorias.iterator();
+            Iterator<Double> precioIterator = precios.iterator();
+            Iterator<Integer> existenciaIterator = existencias.iterator();
+            Iterator<Date> fechaCaducidadIterator = fechasCaducidad.iterator();
 
-        System.out.print("Ingrese el nombre del producto: ");
-        String nombre = scanner.nextLine();
-
-        System.out.print("Ingrese la categoría del producto: ");
-        String categoria = scanner.nextLine();
-
-        List<String> nuevoProducto = new ArrayList<>();
-        nuevoProducto.add(id);
-        nuevoProducto.add(nombre);
-        nuevoProducto.add(categoria);
-
-        productos.add(nuevoProducto);
-
-        System.out.println("Producto agregado correctamente.");
-    }
-
-    private static void retirarProducto() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Ingrese el ID del producto que desea retirar: ");
-        String idRetirar = scanner.nextLine();
-
-        Iterator<List<String>> iterator = productos.iterator();
-        boolean encontrado = false;
-
-        while (iterator.hasNext()) {
-            List<String> productoActual = iterator.next();
-            if (productoActual.get(0).equals(idRetirar)) {
-                iterator.remove();
-                encontrado = true;
-                break;
+            while (idIterator.hasNext()) {
+                int idActual = idIterator.next();
+                if (idActual == idRetirar) {
+                    idIterator.remove();
+                    productoIterator.remove();
+                    categoriaIterator.remove();
+                    precioIterator.remove();
+                    existenciaIterator.remove();
+                    fechaCaducidadIterator.remove();
+                    JOptionPane.showMessageDialog(null, "Producto retirado correctamente.");
+                    return;
+                }
             }
-        }
 
-        if (encontrado) {
-            System.out.println("Producto retirado correctamente.");
-        } else {
-            System.out.println("No se encontró un producto con ese ID.");
+            JOptionPane.showMessageDialog(null, "No se encontró un producto con ese ID.");
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Ingrese un ID válido.");
         }
     }
 
-    private static void mostrarProductos() {
-        System.out.println("Lista de Productos:");
+    public void mostrarProductos() {
+        StringBuilder mensaje = new StringBuilder("Lista de Productos:\n");
 
-        for (List<String> producto : productos) {
-            System.out.println("ID: " + producto.get(0) + ", Nombre: " + producto.get(1) + ", Categoría: " + producto.get(2));
+        for (int i = 0; i < id.size(); i++) {
+            mensaje.append("ID: ").append(id.get(i)).append(", Nombre: ").append(productos.get(i)).append(", Categoría: ").append(categorias.get(i)).append("\n");
         }
+
+        JOptionPane.showMessageDialog(null, mensaje.toString());
     }
 }
